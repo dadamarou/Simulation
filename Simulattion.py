@@ -11,40 +11,43 @@ st.title("Simulation de voyage ski - Suisse Janvier 2026")
 # =========================
 tab1, tab2, tab3, tab4 = st.tabs(["Risques de base", "Risques personnels", "Sévérité personnelle", "Scénarios"])
 
-# === Onglets des paramètres ===
+# === Onglet Risques de base ===
 with tab1:
     st.header("Risques de base")
-    N = st.number_input("Nombre de simulations (N)", min_value=10_000, max_value=1_000_000, value=500_000, step=10_000)
+    N = st.number_input("Nombre de simulations (N)", min_value=10000, max_value=1000000, value=500000, step=10000)
     trip_days = st.slider("Nombre de jours de ski", 1, 14, 3)
-    p_transport_cancel = st.slider("Probabilité annulation transport (%)", 0, 50, 2)/100
-    p_transport_delay = st.slider("Probabilité retard transport (%)", 0, 50, 15)/100
-    p_no_snow = st.slider("Probabilité pas/neige insuffisante (%)", 0, 50, 10)/100
-    p_storm_block = st.slider("Probabilité tempête (blocage) (%)", 0, 50, 5)/100
-    p_sanitary_block = st.slider("Probabilité blocage sanitaire (%)", 0, 50, 2)/100
-    p_injury_per_day = st.slider("Probabilité blessure par jour (%)", 0, 5, 0.1)/100
+    p_transport_cancel = st.slider("Probabilité annulation transport (%)", 0.0, 50.0, 2.0)/100
+    p_transport_delay = st.slider("Probabilité retard transport (%)", 0.0, 50.0, 15.0)/100
+    p_no_snow = st.slider("Probabilité pas/neige insuffisante (%)", 0.0, 50.0, 10.0)/100
+    p_storm_block = st.slider("Probabilité tempête (blocage) (%)", 0.0, 50.0, 5.0)/100
+    p_sanitary_block = st.slider("Probabilité blocage sanitaire (%)", 0.0, 50.0, 2.0)/100
+    p_injury_per_day = st.slider("Probabilité blessure par jour (%)", 0.0, 5.0, 0.1)/100
 
+# === Onglet Risques personnels ===
 with tab2:
     st.header("Risques personnels (occurrence)")
-    p_self_ill = st.slider("Maladie personnelle (%)", 0, 20, 3.5)/100
-    p_child_ill = st.slider("Maladie enfant (%)", 0, 20, 2.5)/100
-    p_work_block = st.slider("Blocage professionnel (%)", 0, 20, 1.5)/100
-    p_financial = st.slider("Problème financier (%)", 0, 20, 1.5)/100
+    p_self_ill = st.slider("Maladie personnelle (%)", 0.0, 20.0, 3.5)/100
+    p_child_ill = st.slider("Maladie enfant (%)", 0.0, 20.0, 2.5)/100
+    p_work_block = st.slider("Blocage professionnel (%)", 0.0, 20.0, 1.5)/100
+    p_financial = st.slider("Problème financier (%)", 0.0, 20.0, 1.5)/100
 
+# === Onglet Sévérité personnelle ===
 with tab3:
     st.header("Sévérité des événements personnels (annulation vs voyage impacté)")
-    c_self_ill_cancel = st.slider("Maladie personnelle → annulation (%)", 0, 100, 60)/100
-    c_child_ill_cancel = st.slider("Maladie enfant → annulation (%)", 0, 100, 70)/100
-    c_work_block_cancel = st.slider("Blocage professionnel → annulation (%)", 0, 100, 80)/100
-    c_financial_cancel = st.slider("Problème financier → annulation (%)", 0, 100, 90)/100
+    c_self_ill_cancel = st.slider("Maladie personnelle → annulation (%)", 0.0, 100.0, 60.0)/100
+    c_child_ill_cancel = st.slider("Maladie enfant → annulation (%)", 0.0, 100.0, 70.0)/100
+    c_work_block_cancel = st.slider("Blocage professionnel → annulation (%)", 0.0, 100.0, 80.0)/100
+    c_financial_cancel = st.slider("Problème financier → annulation (%)", 0.0, 100.0, 90.0)/100
 
+# === Onglet Scénarios prédéfinis ===
 with tab4:
     st.header("Scénarios prédéfinis")
     scenario = st.selectbox("Choisir un scénario", ["Réalisme", "Optimiste", "Pessimiste"])
     if scenario == "Optimiste":
-        p_transport_cancel, p_transport_delay, p_no_snow, p_storm_block, p_sanitary_block = 0.01, 0.1, 0.05, 0.02, 0.01
+        p_transport_cancel, p_transport_delay, p_no_snow, p_storm_block, p_sanitary_block = 0.01, 0.10, 0.05, 0.02, 0.01
         p_self_ill, p_child_ill, p_work_block, p_financial = 0.02, 0.01, 0.01, 0.01
     elif scenario == "Pessimiste":
-        p_transport_cancel, p_transport_delay, p_no_snow, p_storm_block, p_sanitary_block = 0.05, 0.2, 0.2, 0.1, 0.05
+        p_transport_cancel, p_transport_delay, p_no_snow, p_storm_block, p_sanitary_block = 0.05, 0.20, 0.20, 0.10, 0.05
         p_self_ill, p_child_ill, p_work_block, p_financial = 0.05, 0.03, 0.03, 0.03
 
 # =========================
@@ -52,7 +55,6 @@ with tab4:
 # =========================
 rng = np.random.default_rng()
 
-# Événements de base
 transport_cancel_mask = rng.random(N) < p_transport_cancel
 sanitary_block_mask = rng.random(N) < p_sanitary_block
 transport_delay_mask = rng.random(N) < p_transport_delay
@@ -60,7 +62,6 @@ no_snow_mask = rng.random(N) < p_no_snow
 storm_mask = rng.random(N) < p_storm_block
 injury_mask = rng.random(N) < (1 - (1 - p_injury_per_day) ** trip_days)
 
-# Événements personnels
 self_ill_mask = rng.random(N) < p_self_ill
 self_ill_cancel_mask = self_ill_mask & (rng.random(N) < c_self_ill_cancel)
 self_ill_mild_mask = self_ill_mask & ~self_ill_cancel_mask
@@ -81,7 +82,7 @@ personal_cancel_mask = self_ill_cancel_mask | child_ill_cancel_mask | work_block
 personal_mild_mask = self_ill_mild_mask | child_ill_mild_mask | work_block_mild_mask | financial_mild_mask
 
 # =========================
-# Classement des issues avec priorité stricte
+# Classement des issues
 # =========================
 outcomes = np.full(N, "Perfect trip", dtype=object)
 
@@ -105,7 +106,6 @@ outcomes[mask_disturbed] = "Disturbed (delay / minor inconvenience)"
 # =========================
 summary = pd.Series(outcomes).value_counts().rename_axis("outcome").reset_index(name="count")
 summary["probability"] = summary["count"] / N
-summary = summary.reset_index(drop=True)
 
 # Probabilité globale de voyage réussi
 success_mask = (outcomes == "Perfect trip") | \
@@ -116,12 +116,12 @@ st.metric("Probabilité globale de voyage réussi", f"{success_rate:.2f} %")
 
 # Tableau en pourcentages
 summary_display = summary.copy()
-summary_display["probability"] = (summary_display["probability"] * 100).round(2).astype(str) + " %"
+summary_display["probability"] = (summary_display["probability"]*100).round(2).astype(str)+" %"
 st.subheader("Résultats de la simulation")
 st.dataframe(summary_display)
 
 # Camembert
-summary_plot = summary[summary["probability"].notna() & (summary["probability"] > 0)]
+summary_plot = summary[summary["probability"]>0]
 st.subheader("Diagramme des probabilités")
 fig = px.pie(summary_plot, names="outcome", values="probability", title="Probabilités de chaque issue")
 fig.update_traces(textinfo='percent+label')
