@@ -110,6 +110,3 @@ summary_plot = summary[summary["probability"].notna() & (summary["probability"] 
 fig = px.pie(summary_plot, names="outcome", values="probability", title="Probabilités de chaque issue")
 st.plotly_chart(fig)
 
-cancel_prob = summary.loc[summary["outcome"] == "Cancelled", "probability"].values
-if len(cancel_prob) > 0:
-    st.info(f"**Probabilité totale d'annulation du voyage : {cancel_prob[0]:.2%}**")
