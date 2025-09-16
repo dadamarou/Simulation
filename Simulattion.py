@@ -4,7 +4,7 @@ import streamlit as st
 import plotly.express as px
 
 st.set_page_config(page_title="Simulation de voyage ski", layout="wide")
-st.title("Simulation de voyage ski - Suisse Janvier 2026")
+st.title("Simulation de l'escapade des guerriers - Suisse Janvier 2026")
 
 # =========================
 # Onglets pour paramètres
@@ -140,8 +140,9 @@ st.download_button("Télécharger les résultats CSV", data=csv, file_name="simu
 
 # Résumé narratif
 st.markdown(f"""
-### Résumé automatique
+### Résumé :
 - Sur {N} simulations, {success_rate:.2f}% des voyages sont globalement réussis.
 - {summary_display.loc[summary_display['outcome']=='Cancelled','probability'].values[0]} ont été annulés.
 - {summary_display.loc[summary_display['outcome']=='Major disruption (ski unavailable/limited)','probability'].values[0]} ont connu une disruption majeure.
 """)
+
