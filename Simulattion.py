@@ -14,7 +14,7 @@ tab1, tab2, tab3, tab4 = st.tabs(["Risques de base", "Risques personnels", "Sév
 # === Onglet Risques de base ===
 with tab1:
     st.header("Risques de base")
-    N = st.number_input("Nombre de simulations (N)", min_value=10000, max_value=1000000, value=500000, step=10000)
+    N = st.number_input("Nombre de simulations (N)", min_value=10000, max_value=1000000, value=1000000, step=10000)
     trip_days = st.slider("Nombre de jours de ski", 1, 14, 3)
     p_transport_cancel = st.slider("Probabilité annulation transport (%)", 0.0, 50.0, 2.0)/100
     p_transport_delay = st.slider("Probabilité retard transport (%)", 0.0, 50.0, 15.0)/100
@@ -145,4 +145,5 @@ st.markdown(f"""
 - {summary_display.loc[summary_display['outcome']=='Cancelled','probability'].values[0]} ont été annulés.
 - {summary_display.loc[summary_display['outcome']=='Major disruption (ski unavailable/limited)','probability'].values[0]} ont connu une disruption majeure.
 """)
+
 
